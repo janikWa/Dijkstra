@@ -21,6 +21,8 @@ public class Edge extends JComponent {
         this.end_X = endnode.getPosX();
         this.end_Y = endnode.getPosY();
         this.node_angle = Math.toDegrees(Math.atan(Model.delta(start_Y,end_Y)/Model.delta(start_X,end_X)));
+        startnode.addOutGoingEdge(this);
+        endnode.addIngoinEdges(this);
     }
 
     //Getter and Setter

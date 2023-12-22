@@ -52,13 +52,22 @@ public class Model {
 
     public static void removeNode(Node node){
         gui.getMainpanel().remove(node);
-        gui.getFrame().repaint();
         nodes.remove(node);
+        while(node.getOutgoingEdges().size()> 0 ){
+            gui.getMainpanel().remove(node.getOutgoingEdges().getLast());
+            removeEdge(node.getOutgoingEdges().getLast());
+        }
+        while (node.getIngoingEdges().size() > 0){
+            gui.getMainpanel().remove(node.getIngoingEdges().getLast());
+            removeEdge(node.getIngoingEdges().getLast());
+        }
+        gui.getFrame().repaint();
     }
 
     public static void removeEdge(Edge edge){
+        edge.getStartnode().getOutgoingEdges().remove(edge);
+        edge.getEndnode().getIngoingEdges().remove(edge);
         edges.remove(edge);
-
     }
 
     public static boolean checkDouble(Node node){

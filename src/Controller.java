@@ -43,16 +43,15 @@ public class Controller implements ActionListener, MouseListener {
             edgeInputField.run();
 
         }else if(e.getSource()==gui.getRemove_node()){
-            Node node;
             this.removeField = new RemoveField(this);
             removeField.run();
 
-
-
-        }else if(e.getSource()==removeField.getRemoveBtn()){
+        }else if(removeField!= null && e.getSource()==removeField.getRemoveBtn()){
             Model.removeNode(Model.getNodes().get(removeField.getRemoveNodeCombobox().getSelectedIndex()));
-
-        }else if(e.getSource() == edgeInputField.getAddBtn()){
+            removeField.updateComboBox(); // Update the JComboBox
+            removeField.revalidate();
+        }
+        else if(e.getSource() == edgeInputField.getAddBtn()){
             try{
                 Model.addEdge(new Edge(Model.getNodes().get(edgeInputField.getStartNodeComboBox().getSelectedIndex()), Model.getNodes().get(edgeInputField.getEndNodeComboBox().getSelectedIndex()), Integer.parseInt(edgeInputField.getWeightField().getText())));
                 Model.drawEdge();
