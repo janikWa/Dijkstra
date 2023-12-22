@@ -11,6 +11,7 @@ public class Edge extends JComponent {
     private double node_angle;
     private Node startnode;
     private Node endnode;
+    private JTextField weightfield;
 
     public Edge(Node startnode, Node endnode, int weight){
         this.startnode = startnode;
@@ -21,6 +22,8 @@ public class Edge extends JComponent {
         this.end_X = endnode.getPosX();
         this.end_Y = endnode.getPosY();
         this.node_angle = Math.toDegrees(Math.atan(Model.delta(start_Y,end_Y)/Model.delta(start_X,end_X)));
+        this.weightfield = new JTextField(String.valueOf(weight));
+        setWeightfield(weightfield);
         startnode.addOutGoingEdge(this);
         endnode.addIngoinEdges(this);
     }
@@ -54,6 +57,16 @@ public class Edge extends JComponent {
         return end_Y;
     }
 
+    public JTextField getWeightfield() {
+        return weightfield;
+    }
+
+    public void setWeightfield(JTextField weightfield) {
+        weightfield.setOpaque(false);
+        weightfield.setFocusable(false);
+        weightfield.setBorder(null);
+        weightfield.setHorizontalAlignment(JTextField.CENTER);
+    }
 
     public void paint(Graphics g){
         Graphics2D g2 = (Graphics2D) g;

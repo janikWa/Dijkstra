@@ -54,17 +54,17 @@ public class Model {
         gui.getMainpanel().remove(node);
         nodes.remove(node);
         while(node.getOutgoingEdges().size()> 0 ){
-            gui.getMainpanel().remove(node.getOutgoingEdges().getLast());
             removeEdge(node.getOutgoingEdges().getLast());
         }
         while (node.getIngoingEdges().size() > 0){
-            gui.getMainpanel().remove(node.getIngoingEdges().getLast());
             removeEdge(node.getIngoingEdges().getLast());
         }
         gui.getFrame().repaint();
     }
 
     public static void removeEdge(Edge edge){
+        gui.getMainpanel().remove(edge);
+        gui.getMainpanel().remove(edge.getWeightfield());
         edge.getStartnode().getOutgoingEdges().remove(edge);
         edge.getEndnode().getIngoingEdges().remove(edge);
         edges.remove(edge);
@@ -102,13 +102,13 @@ public class Model {
         JFrame frame = gui.getFrame();
         JPanel mainpanel = gui.getMainpanel();
         Edge edge = Model.getEdges().getLast();
-        JTextField edge_name = new JTextField();
-        edge_name.setOpaque(false);
-        edge_name.setFocusable(false);
-        edge_name.setText(String.valueOf(edge.getWeight()));
-        edge_name.setBorder(null);
-        edge_name.setHorizontalAlignment(JTextField.CENTER);
-        mainpanel.add(edge_name).setBounds((int) ((edge.getStart_X()+edge.getEnd_X())/2),(int) ((edge.getStart_Y()+edge.getEnd_Y())/2),30,30);
+        //JTextField edge_name = new JTextField();
+        //edge_name.setOpaque(false);
+//        edge_name.setFocusable(false);
+//        edge_name.setText(String.valueOf(edge.getWeight()));
+//        edge_name.setBorder(null);
+//        edge_name.setHorizontalAlignment(JTextField.CENTER);
+        mainpanel.add(edge.getWeightfield()).setBounds((int) ((edge.getStart_X()+edge.getEnd_X())/2),(int) ((edge.getStart_Y()+edge.getEnd_Y())/2),30,30);
         mainpanel.add(edge);
         frame.revalidate();
     }
