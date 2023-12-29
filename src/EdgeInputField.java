@@ -24,7 +24,6 @@ public class EdgeInputField extends JComponent{
             controller = c;
             addBtn.addActionListener(controller);
         }
-
         public void run(){
             for (int i = 0; i < Model.getNodes().size(); i++) {
                 startNodeComboBox.addItem(Model.getNodes().get(i).getName());

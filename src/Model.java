@@ -1,8 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Model {
 
@@ -11,7 +9,7 @@ public class Model {
     private static boolean addNodesMode = false;
     private static ArrayList<Node> nodes = new ArrayList<>();
     private static ArrayList<Edge> edges = new ArrayList<>();
-
+    private static ArrayList<String> shortestPaths = new ArrayList<>();
 
 
     //getter and setter
@@ -26,7 +24,6 @@ public class Model {
     public static ArrayList<Node> getNodes(){
         return nodes;
     }
-
     public static void setAddNodesMode(boolean mode) {
         addNodesMode = mode;
     }
@@ -38,6 +35,8 @@ public class Model {
     public static void setController(Controller controller) {
         Model.controller = controller;
     }
+
+
 
     //Methods
     public static Node newNode(Point loc, String name){
@@ -52,6 +51,7 @@ public class Model {
 
     public static void removeNode(Node node){
         gui.getMainpanel().remove(node);
+        gui.getMainpanel().remove(node.getNode_name());
         nodes.remove(node);
         while(node.getOutgoingEdges().size()> 0 ){
             removeEdge(node.getOutgoingEdges().getLast());
@@ -86,14 +86,7 @@ public class Model {
         JPanel mainpanel = gui.getMainpanel();
         JFrame frame = gui.getFrame();
         Node node = Model.getNodes().getLast();
-        JTextField node_name = new JTextField();
-        node_name.setOpaque(false);
-        node_name.setForeground(Color.white);
-        node_name.setFocusable(false);
-        node_name.setText(node.getName());
-        node_name.setBorder(null);
-        node_name.setHorizontalAlignment(JTextField.CENTER);
-        mainpanel.add(node_name).setBounds((int) node.getPosX()-15, (int)node.getPosY()-15, 25,25);
+        mainpanel.add(node.getNode_name()).setBounds((int) node.getPosX()-15, (int)node.getPosY()-15, 25,25);
         mainpanel.add(node);
         frame.revalidate();
     }
@@ -102,12 +95,6 @@ public class Model {
         JFrame frame = gui.getFrame();
         JPanel mainpanel = gui.getMainpanel();
         Edge edge = Model.getEdges().getLast();
-        //JTextField edge_name = new JTextField();
-        //edge_name.setOpaque(false);
-//        edge_name.setFocusable(false);
-//        edge_name.setText(String.valueOf(edge.getWeight()));
-//        edge_name.setBorder(null);
-//        edge_name.setHorizontalAlignment(JTextField.CENTER);
         mainpanel.add(edge.getWeightfield()).setBounds((int) ((edge.getStart_X()+edge.getEnd_X())/2),(int) ((edge.getStart_Y()+edge.getEnd_Y())/2),30,30);
         mainpanel.add(edge);
         frame.revalidate();
@@ -139,7 +126,7 @@ public class Model {
 
     public static void displayNodesEdges(){
         StringBuilder information = new StringBuilder();
-        // Information about Nodes
+
         information.append("Node Information:\n");
         for (int i = 0; i < nodes.size(); i++) {
             information.append("Node: ").append(i).append("\n");
@@ -148,7 +135,7 @@ public class Model {
             information.append("PosY: ").append(nodes.get(i).getPosY()).append("\n\n");
         }
 
-        // Information about Edges
+
         information.append("Edge Information:\n");
         for (int i = 0; i < edges.size(); i++) {
             information.append("Edge: ").append(i).append("\n");
@@ -157,18 +144,15 @@ public class Model {
             information.append("Weight: ").append(edges.get(i).getWeight()).append("\n\n");
         }
 
-        // Erstellen und Konfigurieren des JTextArea
         JTextArea textArea = new JTextArea(information.toString());
         textArea.setEditable(false);
 
-        // Erstellen und Konfigurieren des JScrollPane
+
         JScrollPane scrollPane = new JScrollPane(textArea);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
-        // Anpassen der Größe des JOptionPane an den Inhalt
         scrollPane.setPreferredSize(new java.awt.Dimension(500, 500)); // Setze die gewünschte Größe
 
-        // Anzeige der Informationen in einem JOptionPane
         JOptionPane.showMessageDialog(null, scrollPane, "Graph Information", JOptionPane.INFORMATION_MESSAGE);
     }
 
@@ -176,17 +160,58 @@ public class Model {
         return Math.max(a,b)-Math.min(a,b);
     }
 
-
-    //dijkstras algorithm
-    public static void dijkstra(Node node){
-        Node startnode = node;
+    public static void dijkstra(Node startNode) {
+        Set<Node> unvisitedNodes = new HashSet<>(nodes);
         double inf = Double.POSITIVE_INFINITY;
-        HashMap<Node,Double> currentValues = new HashMap<>();
+        Map<Node, Double> costs = new HashMap<>();
+        Map<Node, Node> predecessors = new HashMap<>();
 
-        //initialize with infinity
-        for (int i = 0; i < nodes.size(); i++) {
-            currentValues.put(nodes.get(i),inf);
+        // Initialize with infinity for all nodes
+        for (Node node : nodes) {
+            costs.put(node, inf);
         }
+
+        // Set the cost of the start node to 0
+        costs.put(startNode, 0.0);
+
+        // Priority queue to keep track of the next node to visit
+        PriorityQueue<Node> priorityQueue = new PriorityQueue<>((n1, n2) -> Double.compare(costs.get(n1), costs.get(n2)));
+
+        priorityQueue.add(startNode);
+
+        while (!priorityQueue.isEmpty()) {
+            Node currentNode = priorityQueue.poll();
+            unvisitedNodes.remove(currentNode);
+
+            for (Edge edge : currentNode.getOutgoingEdges()) {
+                Node neighbor = edge.getEndnode();
+                double newCost = costs.get(currentNode) + edge.getWeight();
+
+                if (newCost < costs.get(neighbor)) {
+                    costs.put(neighbor, newCost);
+                    predecessors.put(neighbor, currentNode);
+                    priorityQueue.remove(neighbor);
+                    priorityQueue.add(neighbor);
+                }
+            }
+        }
+
+        for (Node node : nodes) {
+            String s = "Shortest path from " + startNode.getName() + " to " + node.getName() +  ": Cost = " + costs.get(node) + ", Path = " + getPath(startNode, node, predecessors);
+            System.out.println(s);
+            shortestPaths.add(s);
+        }
+    }
+    private static String getPath(Node startNode, Node endNode, Map<Node, Node> predecessors) {
+
+        StringBuilder path = new StringBuilder(endNode.getName());
+        Node current = endNode;
+
+        while (predecessors.containsKey(current)) {
+            current = predecessors.get(current);
+            path.insert(0,  current.getName() + " -> ");
+        }
+        return path.toString();
     }
 
     public static void main(String[] args) {

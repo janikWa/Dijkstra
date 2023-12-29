@@ -42,15 +42,43 @@ public class Controller implements ActionListener, MouseListener {
             this.edgeInputField = new EdgeInputField(this);
             edgeInputField.run();
 
+        //Remove Node
         }else if(e.getSource()==gui.getRemove_node()){
             this.removeField = new RemoveField(this);
             removeField.run();
 
+        //remove edge
+        }else if(e.getSource() == gui.getRemove_edge()){
+            System.out.println("remove edge");
+
+        //calculate
+        }else if(e.getSource() == gui.getCalculate()){
+            Model.dijkstra(Model.getNodes().get(0));
+            System.out.println("Calculate");
+
         }else if(removeField!= null && e.getSource()==removeField.getRemoveBtn()){
-            Model.removeNode(Model.getNodes().get(removeField.getRemoveNodeCombobox().getSelectedIndex()));
-            removeField.updateComboBox(); // Update the JComboBox
-            removeField.revalidate();
+            try{
+                Model.removeNode(Model.getNodes().get(removeField.getRemoveNodeCombobox().getSelectedIndex()));
+                removeField.updateComboBox(); // Update the JComboBox
+                removeField.revalidate();
+            }catch (IndexOutOfBoundsException empty){
+                JOptionPane.showMessageDialog(gui.getMainpanel(), "Nothing to remove", "Invalid input", JOptionPane.ERROR_MESSAGE);
+            }
+
+
+        //Info - Dijkstra Explaination
+        }else if(e.getSource() == gui.getInfo()){
+
+            JOptionPane.showMessageDialog(
+                    gui.getMainpanel(),
+                    "Dijkstra's Algorithm finds the shortest path in a graph from a source node to all other nodes.",
+                    "Dijkstra Algorithm Explanation",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+        }else if(e.getSource() == gui.getClearAll()){
+            System.out.println("CLEAR");
         }
+        //Add Edge
         else if(e.getSource() == edgeInputField.getAddBtn()){
             try{
                 Model.addEdge(new Edge(Model.getNodes().get(edgeInputField.getStartNodeComboBox().getSelectedIndex()), Model.getNodes().get(edgeInputField.getEndNodeComboBox().getSelectedIndex()), Integer.parseInt(edgeInputField.getWeightField().getText())));
@@ -78,7 +106,6 @@ public class Controller implements ActionListener, MouseListener {
             }
         }
     }
-
 
     @Override
     public void mousePressed(MouseEvent e) {

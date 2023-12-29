@@ -33,7 +33,7 @@ public class RemoveField extends JComponent {
     public void run() {
         setCombobox();
         JPanel panel = new JPanel();
-        panel.add(new JLabel("Startnode: "));
+        panel.add(new JLabel("Node: "));
         panel.add(NodeComboBox);
         panel.add(removeBtn);
 
@@ -43,10 +43,6 @@ public class RemoveField extends JComponent {
         // Werte aus den Comboboxen und dem Textfeld abrufen
         if (result == JOptionPane.OK_OPTION) {
             try {
-                // Model.addEdge(new Edge(Model.getNodes().get(startNodeComboBox.getSelectedIndex()),
-                // Model.getNodes().get(endNodeComboBox.getSelectedIndex()),
-                // Integer.parseInt(weightField.getText())));
-
             } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(null, "Invalid Input. Please enter a valid number.", "Error",
                         JOptionPane.ERROR_MESSAGE);
