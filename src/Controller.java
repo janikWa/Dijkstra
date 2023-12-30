@@ -55,6 +55,9 @@ public class Controller implements ActionListener, MouseListener {
         //remove edge
         }else if(e.getSource() == gui.getRemove_edge()){
             System.out.println("remove edge");
+        //Clear
+        }else if(e.getSource() == gui.getClearAll()){
+            Model.clearAll();
 
         //calculate
         }else if(e.getSource() == gui.getCalculate()){

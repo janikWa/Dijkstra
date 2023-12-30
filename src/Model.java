@@ -35,8 +35,6 @@ public class Model {
         Model.controller = controller;
     }
 
-
-
     //Methods
     public static Node newNode(Point loc, String name){
         Node node = new Node(loc.getX(), loc.getY(), name);
@@ -67,6 +65,15 @@ public class Model {
         edge.getStartnode().getOutgoingEdges().remove(edge);
         edge.getEndnode().getIngoingEdges().remove(edge);
         edges.remove(edge);
+    }
+
+    public static void clearAll(){
+        while (nodes.size()!= 0){
+            removeNode(nodes.getFirst());
+        }
+        while (edges.size()!= 0){
+            removeEdge(edges.getFirst());
+        }
     }
 
     public static boolean checkDouble(Node node){
