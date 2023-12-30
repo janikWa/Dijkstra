@@ -10,6 +10,7 @@ public class Controller implements ActionListener, MouseListener {
     private GUI gui;
     private EdgeInputField edgeInputField;
     private RemoveField removeField;
+    private SelectStartNode selectStartNode;
 
     public void setGui(GUI gui){
         this.gui = gui;
@@ -21,6 +22,10 @@ public class Controller implements ActionListener, MouseListener {
 
     public Point getMouseLoc(){
         return  MouseInfo.getPointerInfo().getLocation();
+    }
+
+    public SelectStartNode getSelectStartNode() {
+        return selectStartNode;
     }
 
     // Action Performed Methods
@@ -53,8 +58,9 @@ public class Controller implements ActionListener, MouseListener {
 
         //calculate
         }else if(e.getSource() == gui.getCalculate()){
-            Model.dijkstra(Model.getNodes().get(0));
-            System.out.println("Calculate");
+            this.selectStartNode = new SelectStartNode(this);
+            Model.dijkstra(selectStartNode.getSelected());
+            Model.displayPath();
 
         }else if(removeField!= null && e.getSource()==removeField.getRemoveBtn()){
             try{

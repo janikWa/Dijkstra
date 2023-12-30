@@ -9,8 +9,7 @@ public class Model {
     private static boolean addNodesMode = false;
     private static ArrayList<Node> nodes = new ArrayList<>();
     private static ArrayList<Edge> edges = new ArrayList<>();
-    private static ArrayList<String> shortestPaths = new ArrayList<>();
-
+    private static ArrayList<String> shortestPaths;
 
     //getter and setter
     public static ArrayList<Edge> getEdges() {
@@ -156,6 +155,28 @@ public class Model {
         JOptionPane.showMessageDialog(null, scrollPane, "Graph Information", JOptionPane.INFORMATION_MESSAGE);
     }
 
+    public static void displayPath(){
+        String title = "Shortest path from Node " + controller.getSelectStartNode().getSelected().getName() + " to all other Nodes";
+        StringBuilder path = new StringBuilder();
+        //path.append("Shortest Path from" + controller.getSelectStartNode().getSelected().getName() + " to all other Nodes: \n");
+        //path.append("\n");
+        for(String s: shortestPaths){
+            path.append(s+"\n");
+        }
+
+        JTextArea textArea = new JTextArea(path.toString());
+        textArea.setEditable(false);
+
+
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+
+        scrollPane.setPreferredSize(new java.awt.Dimension(500, 500)); // Setze die gewünschte Größe
+
+        JOptionPane.showMessageDialog(null, scrollPane, title, JOptionPane.INFORMATION_MESSAGE);
+
+    }
+
     public static double delta(double a, double b){
         return Math.max(a,b)-Math.min(a,b);
     }
@@ -195,6 +216,8 @@ public class Model {
                 }
             }
         }
+
+        shortestPaths = new ArrayList<>();
 
         for (Node node : nodes) {
             String s = "Shortest path from " + startNode.getName() + " to " + node.getName() +  ": Cost = " + costs.get(node) + ", Path = " + getPath(startNode, node, predecessors);
